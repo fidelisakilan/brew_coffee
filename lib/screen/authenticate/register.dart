@@ -1,39 +1,39 @@
-import 'package:brew_crew/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:brew_crew/shared/constants.dart';
+import 'package:brew_crew/services/auth.dart';
 import 'package:brew_crew/shared/loading.dart';
-
-class Signin extends StatefulWidget {
+import 'package:brew_crew/shared/constants.dart';
+class Register extends StatefulWidget {
 
   final Function toggleView;
-  Signin({this.toggleView});
+  Register({this.toggleView});
   @override
-  _SigninState createState() => _SigninState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _SigninState extends State<Signin> {
-
+class _RegisterState extends State<Register> {
   final AuthService _auth= AuthService();
-    final _formKey =GlobalKey<FormState>();
-  bool loading =false;
+  final _formKey =GlobalKey<FormState>();
 
-  //text field state
-  String email='';
+    bool loading=false;
+    String email='';
   String pass='';
   String error='';
 
   @override
   Widget build(BuildContext context) {
-    return loading? Loading():Scaffold(
+     return loading? Loading():Scaffold(
       backgroundColor: Colors.brown[100],
       appBar:AppBar(backgroundColor: Colors.brown[400],
       elevation: 0.0,
-      title: Text('Sigin in to Brew Crew'),
+      title: Text('Sigin Up to Brew Crew'),
       actions: <Widget>[
         FlatButton.icon(onPressed: (){
           widget.toggleView();
-        }, icon: Icon(Icons.person), label: Text('Register'))
-      ]),
+        },
+         icon: Icon(Icons.person),
+          label: Text('Sign In'))
+      ]
+      ),
       body: Container(
         padding:EdgeInsets.symmetric(vertical:20.0,horizontal:50.0) ,
         child: Form(
@@ -50,8 +50,8 @@ class _SigninState extends State<Signin> {
             ),
             SizedBox(height: 20.0),
             TextFormField(
-              decoration:textInputDecoration.copyWith(hintText:'Password'),
-               validator: (val)=>val.length<8?'Enter an password 8 + char long':null,
+            decoration:textInputDecoration.copyWith(hintText:'Password'),
+              validator: (val)=>val.length<8?'Enter an password 8 + char long':null,
               obscureText: true,
               onChanged: (val){
                 setState(()=>pass=val);
@@ -59,24 +59,22 @@ class _SigninState extends State<Signin> {
             ),
             SizedBox(height: 20.0,),
             RaisedButton(
-              color: Colors.pink,
+              color: Colors.brown[900],
               child:Text(
-                'Sign in',
+                'Sign Up',
                 style: TextStyle(
                   color:Colors.white 
                 ),),
                 onPressed: () async {
-               if(_formKey.currentState.validate()){
-                  setState(()=>loading=true);
-
-                   dynamic result =await _auth.signInWithEmailAndPassword(email, pass);
-                  
+                  if(_formKey.currentState.validate()){
+                    setState(()=>loading=true);
+                   dynamic result =await _auth.registerWithEmailAndPassword(email,pass);
                   if(result==null){
-                    setState((){
-                      error='Invalid Credentials';
-                      loading=false;
-                    });
                     
+                    setState((){
+                      loading=false;
+                      error='please supply a valid email';
+                      });
                   }
 
                   }
@@ -84,7 +82,7 @@ class _SigninState extends State<Signin> {
                 },
 
             ),
-             SizedBox(height: 12.0,),
+            SizedBox(height: 12.0,),
             Text(
               error,style: TextStyle(color: Colors.red,fontSize: 14.0),
             )
